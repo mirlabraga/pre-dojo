@@ -16,7 +16,7 @@ public class PredojoRegexUtil {
 			+ "(29\\/02\\/((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$";
 
 	private final static String REGEX_TIME          =  "^(?:(?:([01]?\\d|2[0-3]):)?([0-5]?\\d):)?([0-5]?\\d)$";
-	private final static String REGEX_JOGO          =  "(^[Mm]atch)";
+	private final static String REGEX_JOGO          =  "\\b[M|m]atch";
 
 
 	public static boolean isData(String strData) {
@@ -32,12 +32,19 @@ public class PredojoRegexUtil {
 	}
 	
 	public static boolean isInicioDoJogo(String strInicioJogo) {
-		Pattern pattern = Pattern.compile("^(New)\\s");
+		
+		System.out.println("PredojoRegexUtil.isInicioDoJogo()");
+
+		final String finalRegexInicioDoJogo = "^(New)";
+		Pattern pattern = Pattern.compile(finalRegexInicioDoJogo);
 		Matcher matcher = pattern.matcher(strInicioJogo);
 		return matcher.find();
 	}
 	
 	public static boolean isFimDoJogo(String strFimJogo) {
+		
+		System.out.println("PredojoRegexUtil.isFimDoJogo()");
+		
 		Pattern pattern = Pattern.compile(REGEX_JOGO);
 		Matcher matcher = pattern.matcher(strFimJogo);
 		return matcher.find();

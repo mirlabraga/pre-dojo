@@ -1,5 +1,7 @@
 package br.sp.devamil.predojo.model;
 
+import java.util.Set;
+
 /**
  * 
  * @author mirla
@@ -9,10 +11,16 @@ public class Jogador {
 
 	private String nome;
 	
-	private double qtdAssassinatos;
+	private Set<Jogador> assassinados;
+	
+	private boolean morto;
 	
 	private double qtdMortes;
 	
+	public Jogador(String nome) {
+		this.nome = nome;
+	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -22,11 +30,7 @@ public class Jogador {
 	}
 
 	public double getQtdAssassinatos() {
-		return qtdAssassinatos;
-	}
-
-	public void setQtdAssassinatos(double qtdAssassinatos) {
-		this.qtdAssassinatos = qtdAssassinatos;
+		return assassinados.size();
 	}
 
 	public double getQtdMortes() {
@@ -35,5 +39,21 @@ public class Jogador {
 
 	public void setQtdMortes(double qtdMortes) {
 		this.qtdMortes = qtdMortes;
+	}
+
+	public Set<Jogador> getAssassinados() {
+		return assassinados;
+	}
+
+	public void setAssassinados(Set<Jogador> assassinados) {
+		this.assassinados = assassinados;
+	}
+
+	public boolean isMorto() {
+		return morto;
+	}
+
+	public void setMorto(boolean morto) {
+		this.morto = morto;
 	}
 }
