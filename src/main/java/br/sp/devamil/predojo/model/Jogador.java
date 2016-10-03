@@ -8,7 +8,7 @@ import java.util.List;
  * @author mirla
  *
  */
-public class Jogador implements Comparable<Integer>{
+public class Jogador implements Comparable<Integer> {
 
 	private String nome;
 

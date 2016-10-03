@@ -37,6 +37,5 @@ public class App {
 		} catch (PredojoException e) {
 			System.out.println(e.getMessage());
 		}
-		
 	}
 }

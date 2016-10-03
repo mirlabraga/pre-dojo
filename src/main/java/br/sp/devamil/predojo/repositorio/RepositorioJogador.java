@@ -45,12 +45,9 @@ public class RepositorioJogador {
 
 					String nomeSujeito = evento[0];
 					String nomePredicato = evento[1].split("using|by")[0];
-					
-					//String arma = evento[1].split("using|by")[1];
 
 					Jogador jogadorSujeito = inserirJogador(nomeSujeito.trim());
 					Jogador jogadorPredicato = inserirJogador(nomePredicato.trim());
-					
 
 					if (!"<WORLD>".equalsIgnoreCase(jogadorSujeito.getNome())) {
 						jogadorSujeito.getAssassinados().add(jogadorPredicato);
