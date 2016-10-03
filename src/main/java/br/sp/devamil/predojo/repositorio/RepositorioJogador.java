@@ -1,17 +1,16 @@
-package br.sp.devamil.predojo.parsers;
+package br.sp.devamil.predojo.repositorio;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
 import br.sp.devamil.predojo.exception.PredojoException;
 import br.sp.devamil.predojo.model.Jogador;
-import br.sp.devamil.predojo.util.PredojoRegexUtil;
+import br.sp.devamil.predojo.util.PredojoUtil;
 
 /**
  * 
@@ -27,7 +26,7 @@ public class RepositorioJogador {
 		this.listaJogadores = new ArrayList<Jogador>();
 	}
 
-	public List<Jogador> inserir(String pathDados) throws PredojoException {
+	public void inserir(String pathDados) throws PredojoException {
 
 		System.out.println("ReaderFile.readFirstLineFromFile()");
 		validar(pathDados);
@@ -35,8 +34,9 @@ public class RepositorioJogador {
 		try (Stream<String> stream = Files.lines(Paths.get(pathDados))) {
 
 			stream.forEach(line -> {
-				if (!PredojoRegexUtil.isInicioDoJogo(line)
-						&& !PredojoRegexUtil.isFimDoJogo(line)) {
+				
+				if (!PredojoUtil.isInicioDoJogo(line)
+						&& !PredojoUtil.isFimDoJogo(line)) {
 
 					String[] acao = line.split("-");
 					String[] evento = acao[1].split("killed");
@@ -44,18 +44,15 @@ public class RepositorioJogador {
 					String nomeSujeito = evento[0];
 					String nomePredicato = evento[1].split("using|by")[0];
 
-					Jogador jogadorSujeito = new Jogador(nomeSujeito.trim());
-					jogadorSujeito.setAssassinados(new HashSet<Jogador>());
-					Jogador jogadorPredicato = new Jogador(nomePredicato);
-					jogadorPredicato.setAssassinados(new HashSet<Jogador>());
+					Jogador jogadorSujeito = inserirJogador(nomeSujeito.trim());
+					Jogador jogadorPredicato = inserirJogador(nomePredicato.trim());
+					
 
 					if (!"<WORLD>".equalsIgnoreCase(jogadorSujeito.getNome())) {
 						jogadorSujeito.getAssassinados().add(jogadorPredicato);
 					}
 
-					jogadorPredicato.setMorto(true);
-					listaJogadores.add(jogadorSujeito);
-					listaJogadores.add(jogadorPredicato);
+					jogadorPredicato.setQtdMortes(jogadorPredicato.getQtdMortes() + 1d);
 				}
 			});
 
@@ -63,11 +60,37 @@ public class RepositorioJogador {
 			throw new PredojoException(
 					"[ERRO]: Um erro ocorreu quando estava sendo capturado as informações do arquivo do jogo");
 		}
-
-		return listaJogadores;
 	}
 
-	public int getQuantidadeAssassinatos() {
+	private Jogador inserirJogador(String nomeJogador) {
+		
+		System.out.println("RepositorioJogador.inserirJogador("+nomeJogador+")");
+		
+		Jogador jogador = new Jogador(nomeJogador);
+		
+		if(!listaJogadores.contains(jogador)) {
+			listaJogadores.add(jogador);	
+		} else {
+			return retornarJogador(nomeJogador);
+		}
+		
+		return jogador;
+	}
+	
+	public Jogador retornarJogador(String nomeJogador) {
+		
+		System.out.println("RepositorioJogador.retornarJogador("+nomeJogador+")");
+		
+		for (Jogador jogadorList : listaJogadores) {
+			if(jogadorList.getNome().equals(nomeJogador)) {
+				return jogadorList;
+			}
+		}
+		
+		return null;
+	}
+
+	public int getQuantidadeTotalAssassinatos() {
 		
 		System.out.println("RepositorioJogador.getQuantidadeAssassinatos()");
 
@@ -79,19 +102,20 @@ public class RepositorioJogador {
 		return qtdAssasinatos;
 	}
 
-	public int getQuantidadeMortos() {
-
-		System.out.println("RepositorioJogador.getQuantidadeMortos()");
+	public double retornarQuantidadeMortesPorJogador(String nomeJogador) {
 		
-		int qtdMortos = 0;
+		System.out
+				.println("RepositorioJogador.retornarQuantidadeMortesPorJogador("+nomeJogador+")");
+		
 		for (Jogador jogador : listaJogadores) {
-			if (jogador.isMorto()) {
-				qtdMortos = qtdMortos + 1;
+			if(jogador.getNome().equals(nomeJogador)) {
+				return jogador.getQtdMortes();
 			}
 		}
-
-		return qtdMortos;
+		return 0;
 	}
+	
+	
 
 	private static void validar(String path) throws PredojoException {
 
@@ -105,18 +129,17 @@ public class RepositorioJogador {
 			throw new PredojoException(
 					"[ERRO]: Arquivo com o nome definido não encontrado. Por favor, verifique caminho ou nome do arquivo.");
 		} catch (IOException e) {
-			
 			throw new PredojoException(
 					"[ERRO]: Um erro ocorreu quando estava sendo capturado as informações do arquivo do jogo.");
 		}
 
-		if (PredojoRegexUtil.isInicioDoJogo(readAllLines.get(0))) {
+		if (!PredojoUtil.isInicioDoJogo(readAllLines.get(0))) {
 
 			throw new PredojoException(
 					"[ERRO]: Um erro ocorreu quando estava sendo capturado as informações do arquivo do jogo. "
 							+ "O arquivo não contém a linha que determina início do jogo.");
 
-		} else if (PredojoRegexUtil.isFimDoJogo(readAllLines.get(readAllLines
+		} else if (!PredojoUtil.isFimDoJogo(readAllLines.get(readAllLines
 				.size() - 1))) {
 
 			throw new PredojoException(
@@ -124,5 +147,9 @@ public class RepositorioJogador {
 							+ "O arquivo não contém a linha que determina fim do jogo.");
 
 		}
+	}
+
+	public List<Jogador> getListaJogadores() {
+		return listaJogadores;
 	}
 }
