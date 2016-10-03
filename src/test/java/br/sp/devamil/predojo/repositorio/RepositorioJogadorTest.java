@@ -72,4 +72,26 @@ public class RepositorioJogadorTest {
 		Double assassinatosPorJogador_ROMAN = repositorioJogador.retornarJogador("Roman").getQtdAssassinatos();
 		Assert.assertEquals(Double.valueOf(1), assassinatosPorJogador_ROMAN);
 	}
+	
+	//Bônus
+	
+
+	@Test
+	public void premiarJogadorTest() throws PredojoException, IOException {
+		
+		RepositorioJogador repositorioJogador = new RepositorioJogador();
+		repositorioJogador.inserir("jogo.log");
+		
+		repositorioJogador.premiarJogador();
+		
+		String assassinatosPorJogador_NICK = repositorioJogador.retornarJogador("Nick").getPremio();
+		Assert.assertNull(assassinatosPorJogador_NICK);
+		
+		String assassinatosPorJogador_WORLD = repositorioJogador.retornarJogador("<WORLD>").getPremio();
+		Assert.assertEquals(String.valueOf("award"), assassinatosPorJogador_WORLD);
+		
+		String assassinatosPorJogador_ROMAN = repositorioJogador.retornarJogador("Roman").getPremio();
+		Assert.assertEquals(String.valueOf("award"), assassinatosPorJogador_ROMAN);
+		
+	}
 }

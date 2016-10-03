@@ -21,6 +21,8 @@ import br.sp.devamil.predojo.util.PredojoUtil;
 public class RepositorioJogador {
 
 	private List<Jogador> listaJogadores;
+	
+	private final String PREMIO_AWARD = "award";
 
 	public RepositorioJogador() {
 		this.listaJogadores = new ArrayList<Jogador>();
@@ -151,5 +153,16 @@ public class RepositorioJogador {
 
 	public List<Jogador> getListaJogadores() {
 		return listaJogadores;
+	}
+	
+	//Bônus
+	
+	public void premiarJogador() {
+		
+		listaJogadores.forEach(jogador -> {
+			if(jogador.getQtdMortes() == 0 ) {
+				jogador.setPremio(PREMIO_AWARD);
+			}
+		});
 	}
 }

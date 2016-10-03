@@ -15,6 +15,8 @@ public class Jogador {
 	private List<Jogador> assassinados;
 
 	private double qtdMortes;
+	
+	private String premio;
 
 	public Jogador(String nome) {
 		this.nome = nome;
@@ -69,5 +71,13 @@ public class Jogador {
 			}
 		}
 		return result;
+	}
+
+	public String getPremio() {
+		return premio;
+	}
+
+	public void setPremio(String premio) {
+		this.premio = premio;
 	}
 }
