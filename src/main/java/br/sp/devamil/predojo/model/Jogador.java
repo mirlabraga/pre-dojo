@@ -8,7 +8,7 @@ import java.util.List;
  * @author mirla
  *
  */
-public class Jogador {
+public class Jogador implements Comparable<Integer>{
 
 	private String nome;
 
@@ -53,9 +53,9 @@ public class Jogador {
 
 	@Override
 	public String toString() {
-		return "Jogador: " + this.nome + " foi morto: " + qtdMortes
+		return " Jogador: " + this.nome + " foi morto: " + qtdMortes
 				+ " vezes e " + assassinados.size()
-				+ " foi a quantidade de assassinatos";
+				+ " foi a quantidade de assassinatos. " + ((premio!=null)?" O jogador foi premiado.":"");
 	}
 
 	@Override
@@ -79,5 +79,10 @@ public class Jogador {
 
 	public void setPremio(String premio) {
 		this.premio = premio;
+	}
+
+	@Override
+	public int compareTo(Integer o) {
+		return (this.getQtdAssassinatos() > 0)?1:-1;
 	}
 }
